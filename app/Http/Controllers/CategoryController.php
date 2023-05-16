@@ -4,8 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Gate;
+
 class CategoryController extends Controller   
 {
+    public function __construct(){
+        // OTORISASI GATE
+        $this->middleware(function($request, $next){
+
+            if(Gate::allows('manage-categories')) return $next($request);
+          
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+          });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,6 +51,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+
+        \Validator::make($request->all(), [
+            "name" => "required|min:3|max:20",
+            "image" => "required"
+          ])->validate();
+
         $name = $request->get('name');
     
         $new_category = new \App\Models\Category;
@@ -94,6 +111,18 @@ public function edit($id){
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
+
+        $category = \App\Models\Category::findOrFail($id);
+
+        \Validator::make($request->all(), [
+        "name" => "required|min:3|max:20",
+        "image" => "required",
+        "slug" => [
+            "required",
+            Rule::unique("categories")->ignore($category->slug, "slug")
+        ]
+        ])->validate();
+
         $name = $request->get('name');
         $slug = $request->get('slug');
     

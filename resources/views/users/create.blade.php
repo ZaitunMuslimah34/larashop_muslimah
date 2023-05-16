@@ -1,125 +1,100 @@
-@extends("layouts.global")
+@extends('layouts.global')
 
-@section("title") Create New User @endsection
+@section('title') Create book @endsection 
 
-@section("content")
+@section('content')
+  <div class="row">
+    <div class="col-md-8">
+      @if(session('status'))
+        <div class="alert alert-success">
+          {{session('status')}}
+        </div>
+      @endif
 
-  <div class="col-md-8">
+      <form 
+        action="{{route('books.store')}}"
+        method="POST"
+        enctype="multipart/form-data"
+        class="shadow-sm p-3 bg-white"
+        >
 
-  @if(session('status'))
-    <div class="alert alert-success">
-        {{session('status')}}
+        @csrf
+
+        <label for="title">Title</label> <br>
+        <input value="{{old('title')}}" type="text" class="form-control {{$errors->first('title') ? "is-invalid" : ""}} " name="title" placeholder="Book title">
+        <div class="invalid-feedback">
+          {{$errors->first('title')}}
+        </div>
+        <br>
+
+        <label for="cover">Cover</label>
+        <input type="file" class="form-control {{$errors->first('cover') ? "is-invalid" : ""}} " name="cover">
+        <div class="invalid-feedback">
+          {{$errors->first('cover')}}
+        </div>
+        <br>
+
+        <label for="description">Description</label><br>
+        <textarea name="description" id="description" class="form-control {{$errors->first('description') ? "is-invalid" : ""}} " placeholder="Give a description about this book">{{old('description')}}</textarea>
+        <div class="invalid-feedback">
+          {{$errors->first('description')}}
+        </div>
+        <br>
+
+        <label for="categories">Categories</label><br>
+        <select name="categories[]" multiple id="categories" class="form-control"></select>
+        <br><br>
+
+        <label for="stock">Stock</label><br>
+        <input value="{{old('stock')}}" type="number" class="form-control {{$errors->first('stock') ? "is-invalid" : ""}} " id="stock" name="stock" min=0 value=0>
+        <div class="invalid-feedback">
+          {{$errors->first('stock')}}
+        </div>
+        <br>
+
+        <label for="author">Author</label><br>
+        <input value="{{old('author')}}" type="text" class="form-control {{$errors->first('author') ? "is-invalid" : ""}} " name="author" id="author" placeholder="Book author">
+        <div class="invalid-feedback">
+          {{$errors->first('author')}}
+        </div>
+        <br>
+
+        <label for="publisher">Publisher</label>  <br>
+        <input value="{{old('publisher')}}" type="text" class="form-control {{$errors->first('publisher') ? "is-invalid" : ""}} " id="publisher" name="publisher" placeholder="Book publisher">
+        <div class="invalid-feedback">
+          {{$errors->first('publisher')}}
+        </div>
+        <br>
+
+        <label for="Price">Price</label> <br>
+        <input value="{{old('price')}}" type="number" class="form-control {{$errors->first('price') ? "is-invalid" : ""}} " name="price" id="price" placeholder="Book price">
+        <div class="invalid-feedback">
+          {{$errors->first('price')}}
+        </div>
+        <br>
+
+        <button class="btn btn-primary" name="save_action" value="PUBLISH">Publish</button>
+        <button class="btn btn-secondary" name="save_action" value="DRAFT">Save as draft</button>
+      </form>
     </div>
-  @endif
-
-    <form 
-        enctype="multipart/form-data" 
-        class="bg-white shadow-sm p-3" 
-        action="{{route('users.store')}}" 
-        method="POST">
-
-      @csrf
-
-      <label for="name">Name</label>
-      <input 
-        class="form-control" 
-        placeholder="Full Name" 
-        type="text" 
-        name="name" 
-        id="name"/>
-      <br>
-
-      <label for="username">Username</label>
-      <input 
-        class="form-control" 
-        placeholder="username" 
-        type="text" 
-        name="username" 
-        id="username"/>
-      <br>
-
-      <label for="">Roles</label>
-      <br>
-      <input 
-        type="checkbox" 
-        name="roles[]" 
-        id="ADMIN" 
-        value="ADMIN"> 
-        <label for="ADMIN">Administrator</label>
-
-      <input 
-        type="checkbox" 
-        name="roles[]" 
-        id="STAFF" 
-        value="STAFF"> 
-        <label for="STAFF">Staff</label>
-
-      <input 
-        type="checkbox" 
-        name="roles[]" 
-        id="CUSTOMER" 
-        value="CUSTOMER"> 
-        <label for="CUSTOMER">Customer</label>
-      <br>
-
-      <br>
-      <label for="phone">Phone number</label> 
-      <br>
-      <input 
-        type="text" 
-        name="phone" 
-        class="form-control">
-
-      <br>
-      <label for="address">Address</label>
-      <textarea 
-        name="address" 
-        id="address" 
-        class="form-control"></textarea>
-
-      <br>
-      <label for="avatar">Avatar image</label>
-      <br>
-      <input 
-        id="avatar" 
-        name="avatar" 
-        type="file" 
-        class="form-control">
-
-      <hr class="my-3">
-
-      <label for="email">Email</label>
-      <input 
-        class="form-control" 
-        placeholder="user@mail.com" 
-        type="text" 
-        name="email" 
-        id="email"/>
-      <br>
-
-      <label for="password">Password</label>
-      <input 
-        class="form-control" 
-        placeholder="password" 
-        type="password" 
-        name="password" 
-        id="password"/>
-      <br>
-
-      <label for="password_confirmation">Password Confirmation</label>
-      <input 
-        class="form-control" 
-        placeholder="password confirmation" 
-        type="password" 
-        name="password_confirmation" 
-        id="password_confirmation"/>
-      <br>
-
-      <input 
-        class="btn btn-primary" 
-        type="submit" 
-        value="Save"/>
-    </form>
   </div>
+@endsection
 
+@section('footer-scripts')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+<script>
+$('#categories').select2({
+  ajax: {
+    url: 'http://larashop.test/ajax/categories/search',
+    processResults: function(data){
+      return {
+        results: data.map(function(item){return {id: item.id, text: item.name} })
+      }
+    }
+  }
+});
+</script>
 @endsection
